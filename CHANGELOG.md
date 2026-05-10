@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-10
+
+### Added
+- `CBORValue.dateString(_ instant: Time.Instant) -> CBORValue` — build a CBOR tag-0 (RFC 3339 string) value from a `Time.Instant`. Sub-nanosecond precision preserved via the serialized text.
+- `CBORValue.dateEpoch(_ instant: Time.Instant) -> CBORValue` — build a CBOR tag-1 (epoch number) value. Whole seconds emit as `uint` / `negative` integers; sub-second emit as `float64`.
+- `CBORValue.asDate: Time.Instant?` — decode tag-0 / tag-1 values into a `Time.Instant`. Handles all four inner forms (uint, negative, float32, float64) for tag 1; round-trips RFC 3339 text via `swift-time` for tag 0.
+- 12 new tests covering encode shapes, all four tag-1 inner-value forms, asDate getters, full `CBOR.encode → decode` round-trips, and rejection of non-date tags.
+
+### Dependencies
+- New: `swift-time` 0.1.0 — for the `Time.Instant` type used by the date helpers.
+
+### Migration
+- Additive only. v0.1 consumers continue to work unchanged. `CBORValue.tagged(0, .textString(...))` and `CBORValue.tagged(1, ...)` still round-trip raw; the new helpers and `asDate` getter are available alongside for opt-in adoption.
+
 ## [0.1.0] - 2026-05-09
 
 ### Added
